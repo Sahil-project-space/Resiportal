@@ -215,7 +215,7 @@
     }
 
     try {
-      const res = await fetch("http://localhost:5000/complaints", {
+      const res = await fetch("/complaints", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resident_id: Number(residentId), message })
