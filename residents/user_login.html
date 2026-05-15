@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ResiPortal | Resident Login</title>
+
+  <style>
+    :root {
+      --primary: #0B2340;
+      --primary-dark: #0B2340;
+      --bg: #f5f1e8;
+    }
+
+    *{ box-sizing:border-box; font-family:Arial,sans-serif }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    /* NAVBAR */
+    .navbar{
+      width:100%;
+      background:var(--primary);
+      color:#fff;
+      padding:15px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      position:fixed;
+      top:0;
+      z-index:1000;
+    }
+    .navbar a{ color:#fff; text-decoration:none; margin-left:16px }
+
+    /* CARD */
+    .card{
+      background:#fff;
+      width:100%;
+      max-width:400px;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 6px 25px rgba(0,0,0,.15);
+      margin-top:140px;
+      animation:fadeUp .8s ease;
+    }
+    @keyframes fadeUp{ from{opacity:0;transform:translateY(20px)} to{opacity:1} }
+
+    h2{
+      text-align:center;
+      color:var(--primary);
+      margin-bottom:20px;
+    }
+
+    label{ font-size:14px; font-weight:600 }
+    input{
+      width:100%;
+      padding:12px;
+      margin:6px 0 14px;
+      border-radius:8px;
+      border:1px solid #ccc;
+    }
+    input:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 6px rgba(11,35,64,.4);
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:8px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    button:hover{ background:var(--primary-dark) }
+
+    .link{
+      margin-top:12px;
+      text-align:center;
+      font-size:14px;
+      color:var(--primary);
+      cursor:pointer;
+    }
+
+    .error{ color:red; text-align:center; margin-top:10px }
+    .success{ color:green; text-align:center; margin-top:10px }
+
+    footer{
+      position:fixed;
+      bottom:0;
+      width:100%;
+      background:var(--primary);
+      color:#fff;
+      text-align:center;
+      padding:10px;
+      font-size:14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <h3>🏡 ResiPortal</h3>
+  <div>
+    <a href="user_registration.html">Register</a>
+    <a href="user_about.html">About</a>
+  </div>
+</div>
+
+<!-- LOGIN FORM -->
+<div class="card" id="loginCard">
+  <h2>Resident Login</h2>
+
+  <form id="loginForm">
+    <label>Username</label>
+    <input type="text" id="username" required>
+
+    <label>Password</label>
+    <input type="password" id="password" required>
+
+    <button type="submit">Login</button>
+
+    <div class="link" onclick="showForgot()">Forgot Password?</div>
+    <div class="link" onclick="location.href='user_registration.html'">New User? Register</div>
+
+    <div id="loginError" class="error"></div>
+    <div id="loginSuccess" class="success"></div>
+  </form>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div class="card" id="forgotCard" style="display:none;">
+  <h2>Reset Password</h2>
+
+  <form id="forgotForm">
+    <label>Username</label>
+    <input type="text" id="fpUsername" required>
+
+    <label>Email</label>
+    <input type="email" id="fpEmail" required>
+
+    <label>New Password</label>
+    <input type="password" id="fpPassword" required>
+
+    <button type="submit">Update Password</button>
+
+    <div class="link" onclick="showLogin()">Back to Login</div>
+
+    <div id="fpError" class="error"></div>
+    <div id="fpSuccess" class="success"></div>
+  </form>
+</div>
+
+<footer>
+  © 2025 ResiPortal | Developed by Mr. Sahil Pardeshi & Ms. Shreeya Patil
+</footer>
+
+<script>
+const loginForm = document.getElementById("loginForm");
+const forgotForm = document.getElementById("forgotForm");
+
+const loginCard = document.getElementById("loginCard");
+const forgotCard = document.getElementById("forgotCard");
+
+function showForgot(){
+  loginCard.style.display="none";
+  forgotCard.style.display="block";
+}
+function showLogin(){
+  forgotCard.style.display="none";
+  loginCard.style.display="block";
+}
+
+/* LOGIN */
+loginForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  loginError.textContent="";
+  loginSuccess.textContent="";
+
+  try{
+    const res = await fetch("/resident/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        username: username.value.trim(),
+        password: password.value.trim()
+      })
+    });
+
+    const data = await res.json();
+    if(!data.success){
+      loginError.textContent="Invalid username or password.";
+      return;
+    }
+
+    localStorage.setItem("resident_id", data.resident_id);
+    loginSuccess.textContent="Login successful! Redirecting...";
+    setTimeout(()=>location.href="user_dashbord.html",1000);
+
+  }catch(err){
+    loginError.textContent="Server error.";
+  }
+});
+
+/* FORGOT PASSWORD */
+forgotForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  fpError.textContent="";
+  fpSuccess.textContent="";
+
+  try{
+    const res = await fetch("/resident/forgot-password",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        username: fpUsername.value.trim(),
+        email: fpEmail.value.trim(),
+        new_password: fpPassword.value.trim()
+      })
+    });
+
+    const data = await res.json();
+    if(!res.ok || !data.success){
+      fpError.textContent = data.message || "Password update failed.";
+      return;
+    }
+
+    fpSuccess.textContent="Password updated successfully!";
+    setTimeout(showLogin,1500);
+
+  }catch(err){
+    fpError.textContent="Server error.";
+  }
+});
+</script>
+
+</body>
+</html>

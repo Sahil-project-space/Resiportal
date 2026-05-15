@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login - ResiPortal</title>
+
+    <style>
+        body { 
+            font-family:Arial; 
+            background:#f5f1e8; 
+            margin:0; 
+            padding:0; 
+            overflow-x:hidden;
+            animation: fadeBody 1s ease-in;
+        }
+
+        /* PAGE FADE */
+        @keyframes fadeBody {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+        /* NAVBAR */
+        .navbar{
+            width:100%;
+            background:#0B2340;
+            padding:15px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap: wrap;
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+            box-sizing:border-box;
+            animation: slideNav 0.7s ease-out;
+        }
+
+        /* NAVBAR SLIDE DOWN */
+        @keyframes slideNav {
+            from { transform:translateY(-20px); opacity:0; }
+            to { transform:translateY(0); opacity:1; }
+        }
+
+        .navbar h2{ margin:0; color:white; }
+
+        .nav-links{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+        }
+        .nav-links a:hover{ text-decoration:underline; }
+
+        /* LOGIN CONTAINER */
+        .box {
+            width:350px; 
+            margin:120px auto; 
+            background:white; 
+            padding:30px;
+            border-radius:15px; 
+            box-shadow:0 0 15px rgba(0,0,0,0.15);
+            animation: fadeUp 0.9s ease-out forwards;
+            opacity:0;
+        }
+
+        @keyframes fadeUp {
+            0% { opacity:0; transform:translateY(20px); }
+            100% { opacity:1; transform:translateY(0); }
+        }
+
+        .box:hover {
+            box-shadow:0 0 25px rgba(0,0,0,0.25);
+            transition:0.3s;
+        }
+
+        h2 { 
+            text-align:center; 
+            color:#0B2340; 
+            margin-bottom:25px;
+            font-size:24px;
+        }
+
+        input {
+            width:100%; 
+            padding:14px 14px;     /* Increased padding */
+            margin:15px 0;         
+            border-radius:6px;
+            border:1px solid #aaa;
+            font-size:16px;
+            transition:0.2s;
+            box-sizing:border-box; 
+        }
+
+        input:focus {
+            border-color:#0B2340;
+            box-shadow:0 0 6px #0B2340;
+            outline:none;
+        }
+
+        button {
+            width:100%; 
+            padding:12px; 
+            border:none; 
+            border-radius:6px;
+            background:#0B2340; 
+            color:white; 
+            cursor:pointer; 
+            font-size:16px;
+            margin-top:10px;
+            transition:0.3s;
+        }
+
+        button:hover { 
+            background:#0B2340; 
+            transform:scale(1.03);
+        }
+
+        /* FOOTER */
+        footer {
+            background:#0B2340;
+            color:white;
+            padding:10px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            width:100%;
+            font-size:14px;
+            animation: fadeFooter 1.2s ease-in;
+        }
+
+        @keyframes fadeFooter {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+    </div>
+</div>
+
+<!-- LOGIN BOX -->
+<div class="box">
+    <h2>Admin Login</h2>
+
+    <input id="username" type="text" placeholder="Admin Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+async function login(){
+    let data = {
+        username: document.getElementById("username").value,
+        password: document.getElementById("password").value
+    };
+
+    let res = await fetch("/admin/login", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify(data)
+    });
+
+    let out = await res.json();
+
+    if(out.success){
+        localStorage.setItem("admin_id", out.admin_id);
+        window.location.href = "Admin_dashboard.html";
+    } else {
+        alert("Invalid Credentials!");
+    }
+}
+</script>
+
+</body>
+</html>

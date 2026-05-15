@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Facilities - ResiPortal</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <style>
+        :root{
+            --brand:#0B2340;
+            --brand-dark:#0B2340;
+            --bg:#f5f1e8;
+            --card-shadow: 0 8px 24px rgba(2,40,80,0.08);
+        }
+
+        body{
+            margin:0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bg);
+        }
+
+        .navbar{
+            background:var(--brand);
+            padding:14px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            margin-left:14px;
+        }
+
+        .page-title{
+            text-align:center;
+            color:#0B2340;
+            margin:26px 0;
+        }
+
+        .container{
+            max-width:1180px;
+            margin:0 auto 120px;
+            padding:18px;
+        }
+
+        .card{
+            background:white;
+            border-radius:12px;
+            padding:18px;
+            box-shadow: var(--card-shadow);
+            margin-bottom:18px;
+        }
+
+        label{
+            font-weight:600;
+            display:block;
+            margin-bottom:6px;
+        }
+
+        select,input[type="date"]{
+            width:100%;
+            padding:10px;
+            height:42px;
+            border-radius:8px;
+            border:1px solid #d7e3ea;
+            box-sizing:border-box;
+        }
+
+        button.primary{
+            padding:10px 16px;
+            background:var(--brand);
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:700;
+            margin-top:12px;
+        }
+
+        .date-row{
+            display:flex;
+            gap:16px;
+            flex-wrap:wrap;
+            margin-top:10px;
+            align-items:flex-end;
+        }
+
+        .date-row > div{
+            flex:1;
+            min-width:200px;
+        }
+
+        .chart-box{
+            background:#f8fbff;
+            border:1px solid #dbe9f6;
+            border-radius:8px;
+            padding:12px;
+            margin-top:14px;
+        }
+
+        .chart-item{
+            display:flex;
+            justify-content:space-between;
+            padding:6px 0;
+            border-bottom:1px dashed #dbe9f6;
+            font-size:14px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:10px;
+        }
+
+        th,td{
+            padding:12px;
+            border-bottom:1px solid #eef6fb;
+        }
+
+        th{
+            background:var(--brand);
+            color:white;
+        }
+
+        .note{
+            font-size:13px;
+            font-weight:600;
+            color:#8a5b00;
+        }
+
+        footer{
+            background:var(--brand);
+            color:white;
+            text-align:center;
+            padding:10px;
+            position:fixed;
+            bottom:0;
+            width:100%;
+        }
+
+        th, td{
+            padding:12px;
+            border-bottom:1px solid #eef6fb;
+            text-align:center;        /* ✅ aligns data under headers */
+            vertical-align:middle;    /* ✅ keeps row content centered */
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+        <a href="user_dashbord.html">Dashboard</a>
+        <a href="user_notice.html">Notices</a>
+        <a href="user_maintaince.html">Payments</a>
+        <a href="user_complaint.html">Complaints</a>
+        <a href="user_about.html">About</a>
+    </div>
+</div>
+
+<h2 class="page-title">Book Facilities</h2>
+
+<div class="container">
+
+    <div class="card">
+
+        <label>Facility</label>
+        <select id="facility">
+            <option value="">-- Select --</option>
+            <option value="Clubhouse">Clubhouse</option>
+            <option value="Function Hall">Function Hall</option>
+            <option value="Garden">Garden</option>
+        </select>
+
+        <div class="date-row">
+            <div>
+                <label>Approx Start Date</label>
+                <input type="date" id="startDate">
+            </div>
+            <div>
+                <label>Approx End Date</label>
+                <input type="date" id="endDate">
+            </div>
+            <div>
+                <label>Select Booking Date</label>
+                <input type="date" id="date">
+            </div>
+        </div>
+
+        <button class="primary" id="submitBtn">Submit Booking</button>
+
+        <div id="formMessage" style="margin-top:10px;font-weight:600;"></div>
+
+        <div class="chart-box">
+            <strong>Unavailable Dates</strong>
+            <div id="chartData">Select facility and date range.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Your Bookings</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Facility</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody id="bookingsBody">
+                <tr><td colspan="4">Loading…</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+const residentId = localStorage.getItem("resident_id");
+if(!residentId){
+    alert("Login as Resident first!");
+    window.location.href="user_login.html";
+}
+
+const facilityEl = document.getElementById("facility");
+const startEl = document.getElementById("startDate");
+const endEl = document.getElementById("endDate");
+const dateEl = document.getElementById("date");
+const chartBox = document.getElementById("chartData");
+const bookingsBody = document.getElementById("bookingsBody");
+const formMessage = document.getElementById("formMessage");
+
+/* prevent past dates */
+const today = new Date().toISOString().split("T")[0];
+startEl.min = today;
+endEl.min = today;
+dateEl.min = today;
+
+/* DISABLE BOOKING IF DATE ALREADY BOOKED */
+document.getElementById("submitBtn").addEventListener("click", async ()=>{
+    if(!facilityEl.value || !dateEl.value){
+        formMessage.style.color="red";
+        formMessage.textContent="Please select facility and booking date.";
+        return;
+    }
+
+    try{
+        const checkRes = await fetch("http://localhost:5000/bookings");
+        const allBookings = await checkRes.json();
+
+        const alreadyBooked = allBookings.some(b =>
+            b.facility === facilityEl.value &&
+            b.date === dateEl.value
+        );
+
+        if(alreadyBooked){
+            formMessage.style.color="red";
+            formMessage.textContent="Selected date is already booked for this facility.";
+            return;
+        }
+
+        const res = await fetch("http://localhost:5000/bookings",{
+            method:"POST",
+            headers:{ "Content-Type":"application/json" },
+            body:JSON.stringify({
+                resident_id: residentId,
+                facility: facilityEl.value,
+                date: dateEl.value
+            })
+        });
+
+        const data = await res.json();
+
+        if(res.ok){
+            formMessage.style.color="green";
+            formMessage.textContent="Booking submitted successfully!";
+            loadBookings();
+            updateChart();
+        }else{
+            formMessage.style.color="red";
+            formMessage.textContent=data.message || "Booking failed.";
+        }
+
+    }catch{
+        formMessage.style.color="red";
+        formMessage.textContent="Server error. Backend not running.";
+    }
+});
+
+/* CHART */
+async function updateChart(){
+    if(!facilityEl.value || !startEl.value || !endEl.value){
+        chartBox.textContent="Select facility and date range.";
+        return;
+    }
+
+    const res = await fetch("http://localhost:5000/bookings");
+    const data = await res.json();
+
+    const start = new Date(startEl.value);
+    const end = new Date(endEl.value);
+
+    const blocked = data.filter(b=>{
+        const d = new Date(b.date);
+        return b.facility===facilityEl.value &&
+               String(b.resident_id)!==String(residentId) &&
+               d>=start && d<=end;
+    });
+
+    if(!blocked.length){
+        chartBox.textContent="All dates available.";
+        return;
+    }
+
+    chartBox.innerHTML = blocked.map(b=>`
+        <div class="chart-item">
+            <span>${b.date}</span>
+            <span>1 day</span>
+        </div>
+    `).join("");
+}
+
+facilityEl.onchange = updateChart;
+startEl.onchange = updateChart;
+endEl.onchange = updateChart;
+
+/* LOAD BOOKINGS */
+async function loadBookings(){
+    const res = await fetch("/bookings");
+    const data = await res.json();
+
+    const mine = data.filter(b=>String(b.resident_id)===String(residentId));
+
+    if(!mine.length){
+        bookingsBody.innerHTML=`<tr><td colspan="4">No bookings found.</td></tr>`;
+        return;
+    }
+
+    bookingsBody.innerHTML = mine.map(b=>`
+        <tr>
+            <td>${b.facility}</td>
+            <td>${b.date}</td>
+            <td>${b.status || "Pending"}</td>
+            <td class="note">Payment must be done to secretary by cheque only.</td>
+        </tr>
+    `).join("");
+}
+
+loadBookings();
+</script>
+
+</body>
+</html>

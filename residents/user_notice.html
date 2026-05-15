@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Notices - ResiPortal</title>
+
+  <style>
+    :root{
+      /* DARK ROYAL BLUE */
+      --brand: #0B2340;
+      --bg: #f5f1e8;
+      --card-shadow: 0 8px 24px rgba(2,40,80,0.08);
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      overflow-x:hidden;
+      box-sizing:border-box;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      animation: fadeBody .8s ease;
+    }
+
+    @keyframes fadeBody {
+      from { opacity:0; transform:translateY(6px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* NAVBAR */
+    .navbar{
+      width:100%;
+      background:var(--brand);
+      padding:14px 20px;
+      color:white;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+      box-sizing:border-box;
+      position:sticky;
+      top:0;
+      z-index:30;
+      animation: slideNav .7s ease;
+    }
+
+    @keyframes slideNav {
+      from { transform: translateY(-18px); opacity:0; }
+      to { transform: translateY(0); opacity:1; }
+    }
+
+    .navbar h2 { margin:0; font-size:18px; color:#fff; }
+
+    .nav-links {
+      display:flex;
+      gap:16px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .nav-links a {
+      color:#fff;
+      text-decoration:none;
+      font-size:15px;
+    }
+
+    .nav-links a:hover{
+      text-decoration:underline;
+    }
+
+    /* PAGE TITLE */
+    .page-title{
+      text-align:center;
+      color:var(--brand);
+      font-size:36px;
+      margin:36px 12px 28px;
+      animation: fadeUp .9s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(12px) }
+      to { opacity:1; transform:translateY(0) }
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width:980px;
+      margin: 12px auto 140px;
+      padding: 28px 18px 18px;
+      box-sizing:border-box;
+    }
+
+    .card {
+      background:#fff;
+      border-radius:12px;
+      padding:18px;
+      box-shadow: var(--card-shadow);
+      animation: cardIn .85s ease;
+      margin-bottom:18px;
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+    }
+
+    @keyframes cardIn {
+      from { opacity:0; transform:translateY(8px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .notice-meta {
+      min-width:72px;
+      text-align:center;
+      color:#6b7f8a;
+      font-size:12px;
+    }
+
+    .notice-meta .date {
+      font-weight:600;
+      color:var(--brand);
+      font-size:13px;
+    }
+
+    .notice-body {
+      flex:1;
+    }
+
+    .notice-title {
+      margin:0 0 8px 0;
+      font-size:18px;
+      color:#083250;
+    }
+
+    .notice-text {
+      margin:0;
+      color:#334e5f;
+      line-height:1.5;
+      white-space:pre-wrap;
+    }
+
+    .empty {
+      padding:18px;
+      text-align:center;
+      color:#557281;
+      font-size:15px;
+      background:#fff;
+      border-radius:10px;
+      box-shadow: var(--card-shadow);
+      margin:12px auto;
+      max-width:720px;
+    }
+
+    .error {
+      color:#a33a3a;
+      background:#fff4f4;
+      border:1px solid #f2c6c6;
+      padding:12px;
+      border-radius:8px;
+      max-width:760px;
+      margin:12px auto;
+      text-align:center;
+    }
+
+    /* FOOTER */
+    footer {
+      background:var(--brand);
+      color:#fff;
+      padding:10px;
+      text-align:center;
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      font-size:14px;
+      box-sizing:border-box;
+      box-shadow:0 -6px 18px rgba(0,0,0,0.08);
+    }
+
+    @media(max-width:720px){
+      .card{ flex-direction:column; gap:8px; }
+      .notice-meta{
+        display:flex;
+        gap:6px;
+        justify-content:center;
+        align-items:center;
+        min-width:unset;
+      }
+      .page-title{ font-size:28px; margin:28px 12px 18px; }
+      .container { padding-top:18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+      <a href="user_dashbord.html">Dashboard</a>
+      <a href="user_maintaince.html">Maintenance</a>
+      <a href="user_booking.html">Bookings</a>
+      <a href="user_complaint.html">Complaints</a>
+      <a href="user_about.html">About</a>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="container">
+    <h2 class="page-title">Society Notices</h2>
+
+    <div id="noticesArea">
+      <div class="empty">Loading notices…</div>
+    </div>
+
+    <div id="errorArea" style="display:none;"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    function formatDate(raw) {
+      if (!raw) return "—";
+      const d = new Date(raw);
+      if (!isNaN(d)) {
+        const opts = { year:'numeric', month:'short', day:'numeric' };
+        return d.toLocaleDateString(undefined, opts);
+      }
+      return String(raw).slice(0,19);
+    }
+
+    function pick(obj, keys){
+      if(!obj) return undefined;
+      for(const k of keys) {
+        if(obj[k] !== undefined && obj[k] !== null) return obj[k];
+      }
+      return undefined;
+    }
+
+    async function loadNotices(){
+      const area = document.getElementById('noticesArea');
+      const errorArea = document.getElementById('errorArea');
+      area.innerHTML = '<div class="empty">Loading notices…</div>';
+      errorArea.style.display = 'none';
+      errorArea.innerHTML = '';
+
+      try {
+        const res = await fetch('/notices', { cache: "no-store" });
+        if(!res.ok) throw new Error('Server returned ' + res.status);
+        const data = await res.json();
+
+        if(!Array.isArray(data) || data.length === 0){
+          area.innerHTML = '<div class="empty">No notices available at the moment.</div>';
+          return;
+        }
+
+        area.innerHTML = '';
+        data.forEach(n => {
+          const title = pick(n, ['title','notice_title','heading']) || 'Untitled Notice';
+          const msg = pick(n, ['message','description','body','notice_body']) || '';
+          const date = pick(n, ['created_at','date','posted_at','timestamp']) || n.date || null;
+
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <div class="notice-meta">
+              <div class="date">${formatDate(date)}</div>
+            </div>
+            <div class="notice-body">
+              <h3 class="notice-title">${escapeHtml(title)}</h3>
+              <p class="notice-text">${escapeHtml(msg)}</p>
+            </div>
+          `;
+          area.appendChild(card);
+        });
+
+      } catch(err) {
+        console.error('Failed to load notices:', err);
+        area.innerHTML = '<div class="empty">Unable to load notices right now.</div>';
+        errorArea.style.display = 'block';
+        errorArea.className = 'error';
+        errorArea.innerText =
+          'Could not contact server. Make sure backend is running at /notices returns JSON.';
+      }
+    }
+
+    function escapeHtml(str){
+      if(str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/\n/g,'<br>');
+    }
+
+    loadNotices();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resident Dashboard - ResiPortal</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        :root{
+            --brand:#0B2340;          /* DARK ROYAL BLUE */
+            --brand-dark:#0B2340;     /* DARKER ROYAL BLUE */
+            --bg:#f5f1e8;
+            --card-shadow: 0 8px 24px rgba(2,40,80,0.08);
+            --panel-gap:18px;
+        }
+
+        html,body{
+            height:100%;
+            margin:0;
+            padding:0;
+            font-family:Arial, Helvetica, sans-serif;
+            background:var(--bg);
+            box-sizing:border-box;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            animation: fadeBody .8s ease;
+            overflow-x: hidden;
+            overflow-y: hidden;
+        }
+
+        @keyframes fadeBody {
+            from { opacity:0; transform: translateY(6px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        /* NAVBAR */
+        .navbar{
+            width:100%;
+            background:var(--brand);
+            padding:12px 18px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            box-shadow:0 2px 8px rgba(0,0,0,0.18);
+            box-sizing:border-box;
+            animation: slideNav 0.7s ease-out;
+            position:relative;
+        }
+
+        @keyframes slideNav {
+            from { transform:translateY(-20px); opacity:0; }
+            to { transform:translateY(0); opacity:1; }
+        }
+
+        .navbar h2{
+            margin:0;
+            color:white;
+            font-size:20px;
+            font-weight:600;
+        }
+
+        .logout-btn {
+            background:white;
+            color:var(--brand);
+            padding:8px 14px;
+            border-radius:6px;
+            text-decoration:none;
+            font-weight:bold;
+            transition:0.18s;
+            cursor:pointer;
+        }
+        .logout-btn:hover { background:#f1f1f1; }
+
+        /* MAIN HEADING */
+        h1 {
+            margin:18px 12px 8px;
+            text-align:center;
+            color:var(--brand);   /* DARK ROYAL BLUE */
+            font-size:28px;
+            letter-spacing:1px;
+            animation: fadeUp 0.7s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            from { transform:translateY(8px); opacity:0; }
+            to { transform:translateY(0); opacity:1; }
+        }
+
+        /* PANEL */
+        .panel {
+            width: 100%;
+            max-width:1160px;
+            margin: 0 auto;
+            padding: 18px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--panel-gap);
+            box-sizing: border-box;
+            min-height: calc(100vh - 170px);
+            align-items: stretch;
+        }
+
+        .box {
+            background:white;
+            padding:22px;
+            border-radius:12px;
+            text-align:center;
+            box-shadow: var(--card-shadow);
+            display:flex;
+            flex-direction:column;
+            justify-content:space-between;
+            transition: transform .22s ease, box-shadow .22s ease;
+            overflow:hidden;
+        }
+
+        .box img {
+            width:72px;
+            height:72px;
+            object-fit:contain;
+            margin:0 auto 10px;
+        }
+
+        .box h3 {
+            margin:8px 0 12px;
+            font-size:18px;
+            color:#083250;
+        }
+
+        .box p {
+            margin:0;
+            color:#4a6b83;
+            font-size:14px;
+        }
+
+        /* BUTTON COLOR */
+        .box a {
+            display:inline-block;
+            padding:10px 18px;
+            border-radius:8px;
+            text-decoration:none;
+            background:var(--brand);
+            color:#fff;
+            font-weight:700;
+            transition: background .18s ease, transform .12s ease;
+            margin-top:12px;
+        }
+
+        .box a:hover {
+            background:var(--brand-dark);
+            transform: translateY(-3px);
+        }
+
+        .box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 40px rgba(2,40,80,0.12);
+        }
+
+        /* FOOTER */
+        footer {
+            background:var(--brand);
+            color:white;
+            padding:10px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            width:100%;
+            font-size:14px;
+            box-sizing:border-box;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <a class="logout-btn" onclick="logout()">Logout</a>
+</div>
+
+<h1>Resident Dashboard</h1>
+
+<div class="panel">
+
+    <div class="box">
+        <img src="https://cdn-icons-png.flaticon.com/512/483/483356.png">
+        <div>
+          <h3>Maintenance</h3>
+          <p>Pay maintenance and view your payment history</p>
+        </div>
+        <a href="user_maintaince.html">Go to Payments</a>
+    </div>
+
+    <div class="box">
+        <img src="https://cdn-icons-png.flaticon.com/512/1827/1827504.png">
+        <div>
+          <h3>Bookings</h3>
+          <p>Reserve facilities & check your bookings</p>
+        </div>
+        <a href="user_booking.html">View Bookings</a>
+    </div>
+
+    <div class="box">
+        <img src="https://cdn-icons-png.flaticon.com/512/906/906334.png">
+        <div>
+          <h3>Notices</h3>
+          <p>Read society notices and announcements</p>
+        </div>
+        <a href="user_notice.html">View Notices</a>
+    </div>
+
+    <div class="box">
+        <img src="https://cdn-icons-png.flaticon.com/512/3190/3190518.png">
+        <div>
+          <h3>Complaints</h3>
+          <p>Lodge complaints and see admin replies</p>
+        </div>
+        <a href="user_complaint.html">Post Complaint</a>
+    </div>
+
+</div>
+
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+    function checkLogin() {
+        if (!localStorage.getItem("resident_id")) {
+            alert("Login as Resident first!");
+            window.location.replace("user_login.html");
+        }
+    }
+
+    //  Check login on page load
+    checkLogin();
+
+    //  Handle browser BACK button (cached page)
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted || !localStorage.getItem("resident_id")) {
+            checkLogin();
+        }
+    });
+
+    function logout(){
+        localStorage.removeItem("resident_id");
+
+        alert("Logged out successfully!");
+
+        //  Prevent back navigation to dashboard
+        window.location.replace("../index.html");
+    }
+</script>
+
+
+</body>
+</html>

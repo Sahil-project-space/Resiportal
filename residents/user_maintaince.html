@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Maintenance Payment - ResiPortal</title>
+
+  <style>
+    :root{
+      --primary:#0B2340;
+      --primary-dark:#0B2340;
+      --bg:#f5f1e8;
+      --white:#ffffff;
+      --border:#cbd5e1;
+    }
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      overflow-x:hidden;
+    }
+
+    .navbar{
+      width:100%;
+      background:var(--primary);
+      padding:14px 20px;
+      color:white;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-sizing:border-box;
+    }
+
+    .navbar h3{
+      color:#ffffff;
+    }
+
+
+    .nav-links{ display:flex; gap:16px; }
+    .nav-links a{ color:white; text-decoration:none; }
+
+    .container{
+      max-width:720px;
+      margin:30px auto 140px;
+      padding:18px;
+    }
+
+    h2,h3{ text-align:center; color:var(--primary); }
+
+    .card{
+      background:white;
+      padding:22px;
+      border-radius:12px;
+      box-shadow:0 8px 24px rgba(0,0,0,0.08);
+      margin-bottom:18px;
+    }
+
+    input{
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid var(--border);
+    }
+
+    #step1 input{
+      margin-bottom:16px;
+    }
+
+    button{
+      background:var(--primary);
+      color:white;
+      border:none;
+      padding:10px 16px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+
+    button.secondary{
+      background:#e2e8f0;
+      color:#333;
+      margin-left:10px;
+    }
+
+    footer{
+      background:var(--primary);
+      color:white;
+      text-align:center;
+      padding:10px;
+      position:fixed;
+      bottom:0;
+      width:100%;
+    }
+
+    .hidden{ display:none; }
+
+    .method-box{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    .option{
+      border:1px solid var(--border);
+      padding:14px;
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      cursor:pointer;
+    }
+
+    .option input[type="radio"]{
+      width:18px;
+      height:18px;
+      margin:0;
+    }
+
+    .actions{
+      margin-top:16px;
+      display:flex;
+      gap:10px;
+    }
+
+    .gateway{ text-align:center; }
+
+    .qr-box{ margin:14px auto; }
+
+    .spinner{
+      border:4px solid #eee;
+      border-top:4px solid var(--primary);
+      border-radius:50%;
+      width:36px;
+      height:36px;
+      animation:spin 1s linear infinite;
+      margin:16px auto;
+    }
+
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+
+    th,td{
+      padding:10px;
+      border-bottom:1px solid #ddd;
+    }
+
+    /* FIX PAYMENT HISTORY TABLE ALIGNMENT ONLY */
+    #paymentHistory table th,
+    #paymentHistory table td{
+      text-align:center;
+      vertical-align:middle;
+    }
+
+
+    th{ background:var(--primary); color:white; }
+  </style>
+</head>
+
+<body>
+
+<div class="navbar">
+  <h3>🏡 ResiPortal</h3>
+  <div class="nav-links">
+    <a href="user_dashbord.html">Dashboard</a>
+    <a href="user_booking.html">Bookings</a>
+    <a href="user_complaint.html">Complaints</a>
+    <a href="user_notice.html">Notices</a>
+    <a href="user_about.html">About</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <h2>Maintenance Payment</h2>
+
+  <!-- STEP 1 -->
+  <div class="card" id="step1">
+    <label>Monthly Maintenance Amount (₹)</label>
+    <input type="number" value="1500" readonly>
+    <button id="payNowBtn">Pay Now</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card hidden" id="step2">
+    <h3>Select Payment Method</h3>
+
+    <div class="method-box">
+      <label class="option">
+        <input type="radio" name="method" value="UPI"> Pay via UPI
+      </label>
+    </div>
+
+    <div class="actions">
+      <button id="confirmBtn">Confirm Payment</button>
+      <button class="secondary" id="backBtn">Back</button>
+    </div>
+  </div>
+
+  <!-- UPI GATEWAY -->
+  <div class="card hidden" id="gateway">
+    <div class="gateway">
+      <h3>Scan & Pay (UPI)</h3>
+      <p>Amount: ₹1500</p>
+      <div class="qr-box">
+        <img id="upiQR" alt="UPI QR Code">
+      </div>
+      <div class="spinner"></div>
+      <p>Waiting for payment confirmation…</p>
+    </div>
+  </div>
+
+  <!-- RECEIPT -->
+  <div class="card hidden" id="receipt">
+    <h3>Payment Receipt</h3>
+    <p><strong>Payment ID:</strong> <span id="r_id"></span></p>
+    <p><strong>Amount:</strong> ₹1500</p>
+    <p><strong>Method:</strong> <span id="r_method"></span></p>
+    <p><strong>Date:</strong> <span id="r_date"></span></p>
+    <button onclick="closeReceipt()">Done</button>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card">
+    <h3>Payment History</h3>
+    <div id="paymentHistory">Loading...</div>
+  </div>
+
+</div>
+
+<footer>
+  © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+const residentId = localStorage.getItem("resident_id");
+if(!residentId){
+  alert("Login as Resident first!");
+  window.location.replace("user_login.html");
+}
+
+payNowBtn.onclick = () => {
+  step1.classList.add("hidden");
+  step2.classList.remove("hidden");
+};
+
+backBtn.onclick = () => {
+  step2.classList.add("hidden");
+  step1.classList.remove("hidden");
+};
+
+confirmBtn.onclick = () => {
+  const method = document.querySelector('input[name="method"]:checked');
+  if(!method) return alert("Select payment method");
+
+  step2.classList.add("hidden");
+  gateway.classList.remove("hidden");
+
+  const upiString = "upi://pay?pa=demo@upi&pn=ResiPortal&am=1500&cu=INR";
+  upiQR.src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
+    encodeURIComponent(upiString);
+
+  setTimeout(() => {
+    gateway.classList.add("hidden");
+    processPayment("UPI");
+  }, 8000);
+};
+
+async function processPayment(method){
+  const today = new Date();
+
+  await fetch("/payments",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      resident_id:Number(residentId),
+      amount:1500,
+      date: today.toISOString().split("T")[0]
+    })
+  });
+
+  r_id.textContent = "TXN" + Date.now();
+  r_date.textContent = today.toDateString();
+  r_method.textContent = method;
+
+  receipt.classList.remove("hidden");
+  loadPayments();
+}
+
+function closeReceipt(){
+  receipt.classList.add("hidden");
+  step1.classList.remove("hidden");
+}
+
+async function loadPayments(){
+  const box = document.getElementById("paymentHistory");
+  const res = await fetch("/payments");
+  const data = await res.json();
+
+  const mine = data.filter(p => String(p.resident_id) === String(residentId));
+
+  if(!mine.length){
+    box.textContent="No payments yet.";
+    return;
+  }
+
+  box.innerHTML = `
+    <table>
+      <thead><tr><th>Amount</th><th>Date</th></tr></thead>
+      <tbody>
+        ${mine.map(p=>`
+          <tr>
+            <td>₹${p.amount}</td>
+            <td>${new Date(p.date).toDateString()}</td>
+          </tr>`).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+loadPayments();
+</script>
+
+</body>
+</html>

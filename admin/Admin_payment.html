@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maintenance Payments - ResiPortal</title>
+
+    <style>
+        body { 
+            font-family:Arial; 
+            background:#f5f1e8; 
+            margin:0; 
+            padding:0; 
+            overflow-x:hidden;
+            animation: fadeBody 1s ease-in;
+        }
+
+        @keyframes fadeBody {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+        .navbar{
+            width:100%;
+            background:#0B2340;
+            padding:15px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap: wrap;
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+            box-sizing:border-box;
+        }
+
+        .navbar h2{ margin:0; color:white; }
+
+        .nav-links{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+        }
+
+        h2 {
+            text-align:center;
+            margin-top:30px;
+            color:#0B2340;
+        }
+
+        table { 
+            width:90%; 
+            margin:30px auto 120px auto; 
+            border-collapse:collapse; 
+            background:white;
+            border-radius:10px;
+            overflow:hidden;
+        }
+
+        th, td { 
+            padding:12px; 
+            border-bottom:1px solid #ddd; 
+            text-align:left;
+        }
+
+        th { 
+            background:#0B2340; 
+            color:white; 
+        }
+
+        footer {
+            background:#0B2340;
+            color:white;
+            padding:10px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            width:100%;
+            font-size:14px;
+        }
+
+        @media(max-width:600px){
+            table{
+                width:95%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+        <a href="Admin_dashboard.html">Dashboard</a>
+        <a href="Admin_notice.html">Notices</a>
+        <a href="Admin_booking.html">Bookings</a>
+        <a href="Admin_complaint.html">Complaints</a>
+        <a href="Admin_about.html">About</a>
+    </div>
+</div>
+
+<h2>All Maintenance Payments</h2>
+
+<table>
+    <!-- TABLE HEADER -->
+    <thead>
+        <tr>
+            <th>Resident Name</th>
+            <th>Flat</th>
+            <th>Amount</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+
+    <!-- TABLE BODY -->
+    <tbody id="paymentTableBody">
+        <!-- Data rows will come here -->
+    </tbody>
+</table>
+
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+async function loadPayments(){
+    let res = await fetch("/payments");
+    let data = await res.json();
+
+    let tbody = document.getElementById("paymentTableBody");
+
+    data.forEach(p => {
+        tbody.innerHTML += `
+        <tr>
+            <td>${p.name}</td>
+            <td>${p.flat_no}</td>
+            <td>${p.amount}</td>
+            <td>${p.date}</td>
+        </tr>`;
+    });
+}
+loadPayments();
+</script>
+
+</body>
+</html>

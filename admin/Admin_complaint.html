@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complaints - ResiPortal</title>
+
+    <style>
+        body { 
+            font-family:Arial; 
+            background:#f5f1e8; 
+            margin:0; 
+            padding:0;
+            overflow-x:hidden;
+            animation: fadeBody 1s ease-in;
+        }
+
+        /* PAGE FADE ANIMATION */
+        @keyframes fadeBody {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+        /* NAVBAR */
+        .navbar{
+            width:100%;
+            background:#0B2340;
+            padding:15px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            box-sizing:border-box;
+            animation: slideNav 0.7s ease-out;
+        }
+
+        /* SLIDE DOWN NAV */
+        @keyframes slideNav {
+            from { transform:translateY(-20px); opacity:0; }
+            to { transform:translateY(0); opacity:1; }
+        }
+
+        .navbar h2{ margin:0; }
+        .nav-links{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+        }
+        .nav-links a:hover{
+            text-decoration:underline;
+        }
+
+        /* PAGE HEADING */
+        h2 { 
+            text-align:center; 
+            margin-top:30px;
+            animation: fadeUp 0.9s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(20px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+
+        /* TABLE */
+        table { 
+            width:95%; 
+            margin:auto; 
+            background:white; 
+            border-collapse:collapse; 
+            margin-bottom:120px;
+            animation: fadeTable 1s ease-out;
+            border-radius:10px;
+            overflow:hidden;
+        }
+
+        /* TABLE FADE & SCALE */
+        @keyframes fadeTable {
+            from { opacity:0; transform:scale(0.95); }
+            to { opacity:1; transform:scale(1); }
+        }
+
+        th, td { padding:12px; border-bottom:1px solid #ccc; vertical-align:top; }
+        th { background:#0B2340; color:white; }
+
+        /* FIXED TEXTAREA ALIGNMENT */
+        td textarea {
+            width: 100%;
+            min-height: 70px;
+            resize: vertical;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            display: block;
+            margin-bottom: 8px; /* space between textarea and button */
+        }
+
+        /* Button styling remains same, just aligned */
+        td button { 
+            padding:10px 20px; 
+            background:#0B2340; 
+            color:white;
+            border:none; 
+            border-radius:6px; 
+            cursor:pointer; 
+            width: 100%; /* makes alignment clean */
+            transition:0.3s;
+        }
+
+        td button:hover {
+            background:#0B2340;
+            transform:scale(1.05);
+        }
+
+        /* FOOTER */
+        footer {
+            background:#0B2340;
+            color:white;
+            padding:10px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            width:100%;
+            font-size:14px;
+            box-sizing:border-box;
+            animation: fadeFooter 1.2s ease-in;
+        }
+
+        @keyframes fadeFooter {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+        <a href="Admin_dashboard.html">Dashboard</a>
+        <a href="Admin_notice.html">Notices</a>
+        <a href="Admin_payment.html">Payments</a>
+        <a href="Admin_booking.html">Bookings</a>
+        <a href="Admin_about.html">About</a>
+    </div>
+</div>
+
+<h2>Residents Filed Complaints</h2>
+
+<table id="complaintTable">
+    <tr>
+        <th>Resident</th>
+        <th>Flat</th>
+        <th>Complaint</th>
+        <th>Reply</th>
+        <th>Action</th>
+    </tr>
+</table>
+
+<!-- FOOTER -->
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+async function loadComplaints(){
+    let res = await fetch("/complaints");
+    let data = await res.json();
+
+    let table = document.getElementById("complaintTable");
+
+    data.forEach(c=>{
+        table.innerHTML += `
+        <tr>
+            <td>${c.name}</td>
+            <td>${c.flat_no}</td>
+            <td>${c.message}</td>
+            <td>${c.reply ?? "No reply yet"}</td>
+            <td>
+                <textarea id="reply_${c.id}" placeholder="Enter reply"></textarea>
+                <button onclick="sendReply(${c.id})">Send</button>
+            </td>
+        </tr>`;
+    });
+}
+
+async function sendReply(id){
+    let reply = document.getElementById("reply_"+id).value;
+
+    let res = await fetch(`/complaints/${id}/reply`, {
+        method:"PUT",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({ reply: reply })
+    });
+
+    let out = await res.json();
+    alert(out.message);
+    location.reload();
+}
+
+loadComplaints();
+</script>
+
+</body>
+</html>

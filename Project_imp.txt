@@ -1,0 +1,104 @@
+This website - is a user-friendly web platform designed to digitize and simplify the day-to-day operations of a housing society. It replaces manual methods like spreadsheets and WhatsApp groups with a single, centralized system for both residents and the management committee.
+
+
+Core Problem We're Solving - We are eliminating the hassle and inefficiency of managing society tasks manually. This will improve transparency, save time for the management committee, and provide a convenient digital experience for all residents.
+
+
+For Residents:
+
+Online Maintenance Payments: 
+	Securely pay society dues online via UPI, cards, etc., and get instant digital receipts.
+
+Facility Booking: 
+	Check the availability of the clubhouse or party hall on a calendar and book it online.
+
+Digital Notice Board: 
+	Stay updated with all society announcements and receive real-time pop-up alerts for important 	meetings.
+
+
+For the Management Committee (Admin):
+
+Centralized Dashboard: 
+	Get a quick overview of payments collected, outstanding dues, and recent bookings.
+
+Easy Financial Tracking: 
+	Generate bills and track payment status for all flats automatically.
+
+Simple Communication: 
+	Post notices and important alerts for all residents with a few clicks.
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+home - navbar, signin, login, rules and regulations, profile, images, decorative stuff, society location on maps.
+society rules and regulations - navbar, text page, accept button, check box of i had read all rules
+
+
+ 
+registration - full name, email, mobile no., flat no., password, confirm pass, username, confirm username  
+resident login - username, pass, forgot pass, navbar
+resident dashboard - maintainance payment, notice viewing, booking, post complaint 
+sign in - username, pass, forgot pass
+user maintainance - navbar, flat no, full name, payment details, 
+user booking - book amenities, check availability, time duration, amount details, submit 
+user notice - navbar, view bookings after login
+user complaint - navbar, text field, flatno, submit after login. 
+
+
+
+admin login - adminid, pass, navbar
+admin dashboard - maintainance payment check, post notice, accept booking, resolve complaint 
+admin maintainance - navbar, date, flat no., check button  
+admin booking - viewing bookings, accept bookings, check button
+admin notice - navbar, text field, post button
+admin complaint - navbar, view complaint, reply to complaint, 
+
+
+
+ResiPortal/
+│
+├── server.js
+├── db.js
+├── resiportal.sql
+│
+└── public/
+    ├── index.html
+    ├── register.html
+    ├── login.html
+    ├── resident-dashboard.html
+    ├── resident-maintenance.html
+    ├── resident-booking.html
+    ├── resident-notices.html
+    └── resident-complaint.html
+
+
+
+
+ResiPortal/
+│
+├── server.js
+├── db.js
+├── resiportal.sql
+│
+└── public/
+    ├── index.html
+    ├── login.html
+    ├── register.html
+    ├── resident-dashboard.html
+    ├── resident-maintenance.html
+    ├── resident-booking.html
+    ├── resident-notices.html
+    ├── resident-complaint.html
+    ├── admin-dashboard.html
+    ├── admin-maintenance.html
+    ├── admin-booking.html
+    ├── admin-complaint.html
+    └── admin-notice.html
+
+
+TiDB resiportal-db instance password - xpcY1y4Fs2yf5prd
+
+
+

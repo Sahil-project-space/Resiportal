@@ -1,0 +1,121 @@
+-- -----------------------------------------------------
+-- Database: resiportal
+-- Description: MySQL schema for ResiPortal Housing Society Management System
+-- -----------------------------------------------------
+
+CREATE DATABASE IF NOT EXISTS resiportal;
+USE resiportal;
+
+-- -----------------------------------------------------
+-- 1. Residents Table
+-- -----------------------------------------------------
+CREATE TABLE residents (
+  resident_id INT AUTO_INCREMENT PRIMARY KEY,
+  full_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  mobile_no VARCHAR(15),
+  flat_no VARCHAR(10) NOT NULL,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- -----------------------------------------------------
+-- 2. Admin Table
+-- -----------------------------------------------------
+CREATE TABLE admin (
+  admin_id INT AUTO_INCREMENT PRIMARY KEY,
+  admin_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  username VARCHAR(50) NOT NULL UNIQUE,
+  password VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Default Admin Account
+INSERT INTO admin (admin_name, email, username, password)
+VALUES ('Society Admin', 'admin@resiportal.com', 'admin', 'admin123');
+
+-- -----------------------------------------------------
+-- 3. Maintenance Payments Table
+-- -----------------------------------------------------
+CREATE TABLE maintenance_payments (
+  payment_id INT AUTO_INCREMENT PRIMARY KEY,
+  resident_id INT NOT NULL,
+  flat_no VARCHAR(10),
+  amount DECIMAL(10,2) NOT NULL,
+  payment_date DATE DEFAULT (CURRENT_DATE),
+  status ENUM('Paid','Pending') DEFAULT 'Pending',
+  FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------
+-- 4. Facility Bookings Table
+-- -----------------------------------------------------
+CREATE TABLE facility_bookings (
+  booking_id INT AUTO_INCREMENT PRIMARY KEY,
+  resident_id INT NOT NULL,
+  facility_name VARCHAR(100),
+  booking_date DATE NOT NULL,
+  time_slot VARCHAR(50),
+  amount DECIMAL(10,2),
+  status ENUM('Pending','Approved','Rejected') DEFAULT 'Pending',
+  FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------
+-- 5. Complaints Table
+-- -----------------------------------------------------
+CREATE TABLE complaints (
+  complaint_id INT AUTO_INCREMENT PRIMARY KEY,
+  resident_id INT NOT NULL,
+  flat_no VARCHAR(10),
+  complaint_text TEXT NOT NULL,
+  status ENUM('Pending','Resolved') DEFAULT 'Pending',
+  admin_reply TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE
+);
+
+-- -----------------------------------------------------
+-- 6. Notices Table
+-- -----------------------------------------------------
+CREATE TABLE notices (
+  notice_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150) NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- -----------------------------------------------------
+-- 7. Rules & Regulations Table
+-- -----------------------------------------------------
+CREATE TABLE rules (
+  rule_id INT AUTO_INCREMENT PRIMARY KEY,
+  rule_text TEXT NOT NULL
+);
+
+-- Sample Rules
+INSERT INTO rules (rule_text) VALUES
+('Residents must maintain cleanliness in common areas.'),
+('Noise should be kept to a minimum after 10 PM.'),
+('Pets must be supervised in public areas.'),
+('No illegal or commercial activities within society premises.');
+
+-- -----------------------------------------------------
+-- ✅ SAMPLE DATA FOR DEMO
+-- -----------------------------------------------------
+INSERT INTO residents (full_name, email, mobile_no, flat_no, username, password)
+VALUES
+('John Doe', 'john@example.com', '9998887777', 'A-101', 'john', 'john123'),
+('Priya Mehta', 'priya@example.com', '8887776666', 'B-204', 'priya', 'priya123');
+
+INSERT INTO maintenance_payments (resident_id, flat_no, amount, status)
+VALUES
+(1, 'A-101', 2500.00, 'Paid'),
+(2, 'B-204', 2500.00, 'Pending');
+
+INSERT INTO notices (title, content)
+VALUES
+('Water Supply Maintenance', 'Water supply will be unavailable from 10 AM to 2 PM on Sunday due to maintenance.'),
+('Society Meeting', 'Monthly society meeting scheduled for 15th Nov at 6 PM in the clubhouse.');

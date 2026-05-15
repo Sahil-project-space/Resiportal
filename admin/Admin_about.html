@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About ResiPortal</title>
+
+    <style>
+        body { 
+            font-family:Arial; 
+            background:#f5f1e8; 
+            margin:0; 
+            padding:0;
+            overflow-x:hidden;
+            animation: fadeBody 1s ease-in;
+        }
+
+        /* PAGE FADE ANIMATION */
+        @keyframes fadeBody {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+        /* NAVBAR */
+        .navbar{
+            width:100%;
+            background:#0B2340;
+            padding:15px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+            flex-wrap:wrap;
+            box-sizing:border-box;
+            animation: slideNav 0.7s ease-out;
+        }
+        @keyframes slideNav {
+            from { transform:translateY(-20px); opacity:0; }
+            to { transform:translateY(0); opacity:1; }
+        }
+
+        .navbar h2{ margin:0; color:white; }
+
+        .nav-links{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+        }
+        .nav-links a:hover{
+            text-decoration:underline;
+        }
+
+        /* ABOUT CONTENT */
+        .about-box {
+            width:85%;
+            max-width:900px;
+            margin:120px auto 100px auto;
+            background:white;
+            padding:30px;
+            border-radius:12px;
+            box-shadow:0 0 15px rgba(0,0,0,0.15);
+            animation: fadeUp 1s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(20px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+
+        h1 { 
+            text-align:center; 
+            color:#0B2340; 
+            margin-bottom:15px;
+        }
+
+        h3 {
+            color:#0B2340;
+            margin-top:20px;
+        }
+
+        p, li {
+            font-size:16px;
+            line-height:1.6;
+            color:#333;
+        }
+
+        ul {
+            margin-top:10px;
+        }
+
+        /* FOOTER */
+        footer {
+            background:#0B2340;
+            color:white;
+            padding:10px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            width:100%;
+            font-size:14px;
+            animation: fadeFooter 1.2s ease-in;
+        }
+        @keyframes fadeFooter {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+        <a href="Admin_dashboard.html">Dashboard</a>
+        <a href="Admin_booking.html">Bookings</a>
+        <a href="Admin_complaints.html">Complaints</a>
+        <a href="Admin_notice.html">Notices</a>
+        <a href="Admin_payment.html">Maintenance</a>
+    </div>
+</div>
+
+<!-- ABOUT SECTION -->
+<div class="about-box">
+    <h1>About ResiPortal</h1>
+
+    <p>
+        <b>ResiPortal</b> is a digital housing society management system designed to 
+        replace manual paperwork, WhatsApp groups, and spreadsheet-based management with a 
+        modern, user-friendly web portal.
+    </p>
+
+    <h3>🔹 What is ResiPortal?</h3>
+    <p>
+        ResiPortal provides a centralized platform for both <b>residents</b> and the 
+        <b>management committee</b> to handle society operations easily.
+        It ensures transparency, accuracy, and convenience across all society activities.
+    </p>
+
+    <h3>🔹 Key Features for Residents</h3>
+    <ul>
+        <li>Online maintenance payment.</li>
+        <li>Facility and clubhouse booking.</li>
+        <li>Digital notice board for all society announcements.</li>
+        <li>Lodge complaints and check admin replies easily.</li>
+    </ul>
+
+
+    <h3>🔹 Terms & Conditions</h3>
+    <ul>
+        <li>Residents must provide correct personal details during registration.</li>
+        <li>Payments made through the portal are non-refundable.</li>
+        <li>Booking facilities should follow society rules and timings.</li>
+        <li>Complaint section must be used responsibly.</li>
+        <li>Admin actions are monitored for security and transparency.</li>
+    </ul>
+
+    <h3>🔹 Purpose of This Portal</h3>
+    <p>
+        The goal of ResiPortal is to digitize society operations, reduce manual work, 
+        and enhance communication between residents and the management committee.
+    </p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+</body>
+</html>

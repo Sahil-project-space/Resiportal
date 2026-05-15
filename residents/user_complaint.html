@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Post Complaint - ResiPortal</title>
+  <style>
+    :root{
+      --brand: #0B2340;        /* dark royal blue */
+      --brand-dark: #0B2340;  /* darker hover */
+      --bg: #f5f1e8;
+      --card-shadow: 0 8px 24px rgba(2,40,80,0.08);
+      --muted: #557281;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      padding:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      box-sizing:border-box;
+      animation: fadeBody .8s ease;
+    }
+    @keyframes fadeBody { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:translateY(0) } }
+
+    /* NAVBAR */
+    .navbar{
+      width:100%;
+      background:var(--brand);
+      padding:14px 20px;
+      color:white;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 6px 18px rgba(0,0,0,0.12);
+      box-sizing:border-box;
+      position:sticky;
+      top:0;
+      z-index:30;
+      animation: slideNav .7s ease;
+    }
+    @keyframes slideNav { from { transform:translateY(-18px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+    .navbar h2{ margin:0; font-size:18px; color:#fff; }
+    .nav-links{ display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+    .nav-links a{ color:#fff; text-decoration:none; font-size:15px; }
+    .nav-links a:hover{ text-decoration:underline; }
+
+    /* PAGE TITLE */
+    .page-title {
+      text-align:center;
+      color:var(--brand);
+      font-size:28px;
+      margin:26px 12px 8px;
+      animation: fadeUp .9s ease;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px) } to { opacity:1; transform:translateY(0) } }
+
+    .container {
+      max-width:980px;
+      margin: 12px auto 120px;
+      padding: 18px;
+      box-sizing:border-box;
+    }
+
+    .card {
+      background:#fff;
+      border-radius:12px;
+      padding:18px;
+      box-shadow: var(--card-shadow);
+      animation: cardIn .85s ease;
+      margin-bottom:18px;
+    }
+    @keyframes cardIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+
+    label { display:block; margin-bottom:6px; color:#213d4d; font-weight:700; }
+    input[type="text"], textarea {
+      width:100%;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #d7e3ea;
+      font-size:14px;
+      box-sizing:border-box;
+      resize:vertical;
+    }
+    textarea { min-height:120px; }
+
+    .form-row { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+    .field { flex:1; min-width:160px; }
+
+    .actions { display:flex; gap:12px; margin-top:12px; align-items:center; flex-wrap:wrap; }
+    .btn {
+      padding:10px 14px;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn-primary { background:var(--brand); color:white; }
+    .btn-primary:hover { background:var(--brand-dark); }
+    .btn-ghost { background:#f1f5f8; color:#213d4d; }
+
+    .message { margin-top:12px; font-weight:600; }
+    .error { color:#a33a3a; background:#fff4f4; padding:10px; border-radius:8px; border:1px solid #f2c6c6; }
+    .success { color:#0b7a3a; background:#f0fff4; padding:10px; border-radius:8px; border:1px solid #cfeedd; }
+
+    /* COMPLAINT LIST */
+    .complaints-list { display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+    .complaint-item {
+      border-radius:10px;
+      padding:12px;
+      background:#fbfcfd;
+      border:1px solid #e8f1f6;
+      box-shadow: 0 4px 12px rgba(2,40,80,0.03);
+    }
+    .complaint-message { color:#213d4d; margin:0 0 8px 0; white-space:pre-wrap; }
+    .complaint-reply { margin:0; padding:10px; border-radius:8px; background:#fff; border:1px solid #e6f6ed; color:#0b7a3a; }
+    .reply-pending { color:#8a5b00; background:#fff9e6; border:1px solid #f0d7a6; padding:8px; border-radius:8px; }
+
+    footer {
+      background:var(--brand);
+      color:#fff;
+      padding:10px;
+      text-align:center;
+      position:fixed;
+      bottom:0;
+      left:0;
+      width:100%;
+      font-size:14px;
+      box-sizing:border-box;
+      box-shadow:0 -6px 18px rgba(0,0,0,0.08);
+    }
+
+    @media(max-width:720px){
+      .page-title{ font-size:22px; margin-top:18px; }
+      .form-row{ flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+      <a href="user_dashbord.html">Dashboard</a>
+      <a href="user_maintaince.html">Maintenance</a>
+      <a href="user_booking.html">Bookings</a>
+      <a href="user_notice.html">Notices</a>
+      <a href="user_about.html">About</a>
+    </div>
+  </div>
+
+  <h2 class="page-title">Post a Complaint</h2>
+
+  <div class="container">
+
+    <div class="card">
+      <form id="complaintForm">
+        <label for="flatno">Flat Number</label>
+        <input type="text" id="flatno" placeholder="Enter your flat number (optional)">
+
+        <label for="complaint" style="margin-top:12px;">Complaint Details</label>
+        <textarea id="complaint" placeholder="Describe your issue..." required></textarea>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Submit Complaint</button>
+          <button type="button" id="clearBtn" class="btn btn-ghost">Clear</button>
+        </div>
+
+        <div id="feedback" class="message"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px;color:var(--brand);">Your Complaints & Replies</h3>
+      <div id="complaintsArea" class="complaints-list">
+        <div class="empty">Loading your complaints…</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+  </footer>
+
+<script>
+  // Complaint page client logic
+  const residentId = localStorage.getItem("resident_id");
+  const form = document.getElementById("complaintForm");
+  const feedback = document.getElementById("feedback");
+  const complaintsArea = document.getElementById("complaintsArea");
+
+  if (!residentId) {
+    feedback.innerHTML = '<div class="error">You must be logged in to post a complaint. <a href="user_login.html">Login</a></div>';
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    feedback.textContent = "";
+
+    if (!residentId) {
+      feedback.innerHTML = '<div class="error">Not logged in.</div>';
+      return;
+    }
+
+    const message = document.getElementById("complaint").value.trim();
+
+    if (!message) {
+      feedback.innerHTML = '<div class="error">Please enter complaint details.</div>';
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/complaints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resident_id: Number(residentId), message })
+      });
+
+      const out = await res.json();
+      if (res.ok) {
+        feedback.innerHTML = '<div class="success">Complaint submitted.</div>';
+        document.getElementById("complaint").value = "";
+        loadComplaints();
+      } else {
+        feedback.innerHTML = `<div class="error">${out.message || JSON.stringify(out)}</div>`;
+      }
+    } catch (err) {
+      feedback.innerHTML = '<div class="error">Server error. Try again.</div>';
+      console.error(err);
+    }
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", () => {
+    document.getElementById("flatno").value = "";
+    document.getElementById("complaint").value = "";
+    feedback.textContent = "";
+  });
+
+  async function loadComplaints() {
+    if (!residentId) return;
+
+    complaintsArea.innerHTML = '<div class="empty">Loading your complaints…</div>';
+
+    try {
+      const res = await fetch("/complaints");
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+
+      const my = data.filter(c => String(c.resident_id) === String(residentId));
+
+      if (my.length === 0) {
+        complaintsArea.innerHTML = '<div class="empty">You have not submitted any complaints yet.</div>';
+        return;
+      }
+
+      complaintsArea.innerHTML = '';
+      my.forEach(c => {
+        const div = document.createElement('div');
+        div.className = 'complaint-item';
+        div.innerHTML = `
+          <p class="complaint-message">${escapeHtml(c.message)}</p>
+          <p class="complaint-reply">${c.reply ? 'Reply: ' + escapeHtml(c.reply) : '<span class="reply-pending">Pending reply</span>'}</p>
+        `;
+        complaintsArea.appendChild(div);
+      });
+
+    } catch (err) {
+      complaintsArea.innerHTML = '<div class="error">Unable to load complaints.</div>';
+      console.error(err);
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Initial load
+  loadComplaints();
+</script>
+
+</body>
+</html>

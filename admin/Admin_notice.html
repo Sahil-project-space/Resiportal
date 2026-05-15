@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Post Notice - ResiPortal</title>
+
+    <style>
+        body { 
+            font-family:Arial; 
+            background:#f5f1e8; 
+            margin:0; 
+            padding:0;
+            overflow-x:hidden;
+        }
+
+        /* NAVBAR */
+        .navbar{
+            width:100%;
+            background:#0B2340;
+            padding:15px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap: wrap;
+            box-shadow:0 2px 8px rgba(0,0,0,0.25);
+            box-sizing:border-box;
+        }
+
+        .navbar h2{ 
+            margin:0; 
+            color:white; 
+        }
+
+        .nav-links{
+            display:flex; 
+            gap:20px; 
+            flex-wrap:wrap; 
+            justify-content:center;
+        }
+
+        .nav-links a{
+            color:white; 
+            text-decoration:none; 
+            font-size:16px;
+        }
+
+        .nav-links a:hover{
+            text-decoration:underline;
+        }
+
+        .main{
+            max-width:1000px;
+            margin:120px auto 140px;
+            display:flex;
+            gap:30px;
+        }
+
+        .box, .notice-box{
+            flex:1;
+            background:white;
+            padding:30px;
+            border-radius:12px;
+            box-shadow:0 0 12px rgba(0,0,0,0.22);
+        }
+
+        input, textarea { 
+            width:100%; 
+            padding:14px;
+            margin:15px 0;
+            border-radius:8px;
+            border:1px solid #bdbdbd;
+            background:#fafafa;
+            font-size:16px;
+            box-sizing:border-box;
+        }
+
+        textarea { min-height:120px; resize:none; }
+
+        button { 
+            width:100%;
+            padding:14px; 
+            border:none; 
+            background:#0B2340; 
+            color:white; 
+            border-radius:8px; 
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        .notice{
+            border-bottom:1px solid #ddd;
+            padding:12px 0;
+        }
+
+        .notice:last-child{ border-bottom:none; }
+
+        .notice h4{
+            margin:0 0 6px;
+            color:#0B2340;
+        }
+
+        .notice p{
+            margin:0 0 8px;
+            font-size:14px;
+            color:#333;
+        }
+
+        .delete-btn{
+            background:#0B2340;
+            padding:6px 12px;
+            font-size:13px;
+            border-radius:6px;
+        }
+
+        footer {
+            background:#0B2340;
+            color:white;
+            padding:10px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            width:100%;
+        }
+
+        @media(max-width:900px){
+            .main{ 
+                flex-direction:column; 
+                margin-top:140px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR (ORIGINAL) -->
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+        <a href="Admin_dashboard.html">Dashboard</a>
+        <a href="Admin_payment.html">Payments</a>
+        <a href="Admin_booking.html">Bookings</a>
+        <a href="Admin_complaint.html">Complaints</a>
+        <a href="Admin_about.html">About</a>
+    </div>
+</div>
+
+<div class="main">
+
+    <!-- POST NOTICE -->
+    <div class="box">
+        <h2 style="text-align:center;color:#0B2340;">Post New Notice</h2>
+        <input id="title" placeholder="Notice Title">
+        <textarea id="message" placeholder="Notice Description"></textarea>
+        <button onclick="postNotice()">Post Notice</button>
+    </div>
+
+    <!-- POSTED NOTICES -->
+    <div class="notice-box">
+        <h2 style="text-align:center;color:#0B2340;">Posted Notices</h2>
+        <div id="noticeList">Loading...</div>
+    </div>
+
+</div>
+
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+async function postNotice(){
+    const title = document.getElementById("title").value;
+    const message = document.getElementById("message").value;
+
+    const res = await fetch("/notices",{
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body:JSON.stringify({ title, message })
+    });
+
+    const out = await res.json();
+    alert(out.message);
+
+    document.getElementById("title").value="";
+    document.getElementById("message").value="";
+    loadNotices();
+}
+
+async function deleteNotice(id){
+    if(!confirm("Delete this notice?")) return;
+
+    await fetch(`/notices/${id}`,{
+        method:"DELETE"
+    });
+
+    loadNotices();
+}
+
+async function loadNotices(){
+    const res = await fetch("/notices");
+    const data = await res.json();
+
+    const box = document.getElementById("noticeList");
+
+    if(!data.length){
+        box.innerHTML="No notices posted.";
+        return;
+    }
+
+    box.innerHTML = data.map(n=>`
+        <div class="notice">
+            <h4>${n.title}</h4>
+            <p>${n.message}</p>
+            <button class="delete-btn" onclick="deleteNotice(${n.id})">Delete</button>
+        </div>
+    `).join("");
+}
+
+loadNotices();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Bookings - ResiPortal</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        :root{
+            --brand:#0B2340;
+            --approve:#28a745;
+            --reject:#dc3545;
+            --bg:#f5f1e8;
+        }
+
+        body { 
+            font-family:Arial; 
+            background:var(--bg); 
+            padding:0; 
+            margin:0; 
+            overflow-x:hidden;
+            animation: fadeBody 1s ease-in;
+            box-sizing:border-box;
+            /* make room for the fixed footer so content isn't hidden */
+            padding-bottom:80px;
+        }
+
+        /* PAGE FADE ANIMATION */
+        @keyframes fadeBody {
+            from { opacity:0; }
+            to { opacity:1; }
+        }
+
+        /* NAVBAR */
+        .navbar{
+            width:100%;
+            background:var(--brand);
+            padding:15px 20px;
+            color:white;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 2px 8px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            box-sizing:border-box;
+            animation: slideNav 0.7s ease-out;
+        }
+
+        /* SLIDE NAV DOWN */
+        @keyframes slideNav {
+            from { transform:translateY(-20px); opacity:0; }
+            to { transform:translateY(0); opacity:1; }
+        }
+
+        .navbar h2{ margin:0; font-size:18px; }
+        .nav-links{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+            justify-content:center;
+        }
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            font-size:16px;
+        }
+        .nav-links a:hover{ text-decoration:underline; }
+
+        /* MAIN CONTENT */
+        h2 { 
+            text-align:center; 
+            margin-top:30px;
+            animation: fadeUp 0.9s ease-out;
+            color:#0B2340;
+        }
+
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(20px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+
+        /* TABLE */
+        table { 
+            width:90%; 
+            margin:auto; 
+            margin-bottom:40px; 
+            background:white; 
+            border-collapse:collapse;
+            animation: fadeTable 1s ease-out;
+            border-radius:10px;
+            overflow:hidden;
+            box-shadow: 0 6px 18px rgba(2,40,80,0.06);
+        }
+
+        @keyframes fadeTable {
+            from { opacity:0; transform:scale(0.95); }
+            to { opacity:1; transform:scale(1); }
+        }
+
+        th, td { padding:12px; border-bottom:1px solid #e6eef2; vertical-align:middle; }
+        th { background:var(--brand); color:white; text-align:left; font-weight:600; }
+
+        /* Action buttons */
+        .action-wrap { display:flex; gap:8px; align-items:center; }
+        .btn-approve, .btn-reject {
+            padding:8px 12px;
+            color:white;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+            font-weight:600;
+        }
+        .btn-approve { background:var(--approve); }
+        .btn-reject { background:var(--reject); }
+
+        /* Small screens: stack action buttons */
+        @media(max-width:480px){
+            .action-wrap { flex-direction:column; gap:6px; }
+            th, td { padding:10px; font-size:14px; }
+            table { width:96%; }
+        }
+
+        /* FOOTER */
+        footer {
+            background:var(--brand);
+            color:white;
+            padding:12px 18px;
+            text-align:center;
+            position:fixed;
+            bottom:0;
+            left:0;
+            width:100%;
+            font-size:14px;
+            box-sizing:border-box;
+            box-shadow:0 -6px 18px rgba(0,0,0,0.08);
+            z-index:50;
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER / NAVBAR -->
+<div class="navbar">
+    <h2>🏡 ResiPortal</h2>
+    <div class="nav-links">
+        <a href="Admin_dashboard.html">Dashboard</a>
+        <a href="Admin_notice.html">Notices</a>
+        <a href="Admin_payment.html">Payments</a>
+        <a href="Admin_complaint.html">Complaints</a>
+        <a href="Admin_about.html">About</a>
+    </div>
+</div>
+
+<h2>All Facility Bookings</h2>
+
+<table id="bookingTable" aria-live="polite">
+    <tr>
+        <th>Resident</th>
+        <th>Facility</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+</table>
+
+<!-- FOOTER -->
+<footer>
+    © 2025 ResiPortal | Developed by Mr.Sahil Pardeshi & Ms.Shreeya Patil
+</footer>
+
+<script>
+const POSSIBLE_BOOKING_DATE_KEYS = [
+  'booking_date', 'reserved_for', 'reserved_date', 'date', 'book_date', 'reserved_on', 'scheduled_date', 'event_date'
+];
+
+// Format date to "12 Dec 2025" (handles YYYY-MM-DD and ISO strings)
+function formatBookingDate(raw) {
+  if (raw === null || raw === undefined || raw === '') return '—';
+  const s = String(raw).trim();
+
+  // If it's plain YYYY-MM-DD (no time), parse as UTC date to avoid timezone shifts
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const [y, m, d] = s.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m-1, d));
+    return dt.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // Try to parse as ISO / timestamp
+  const dt = new Date(s);
+  if (!isNaN(dt.getTime())) {
+    return dt.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // fallback: return raw string up to 20 chars
+  return s.length > 20 ? s.slice(0,20) + '...' : s;
+}
+
+// Given a booking object, pick the most likely booking date field
+function pickBookingDate(obj) {
+  if (!obj || typeof obj !== 'object') return null;
+  for (const key of POSSIBLE_BOOKING_DATE_KEYS) {
+    if (obj[key] !== undefined && obj[key] !== null && String(obj[key]).trim() !== '') {
+      return obj[key];
+    }
+  }
+  // sometimes backend returns nested object like { date: { date: '...' } } - try to be tolerant
+  for (const key of Object.keys(obj)) {
+    const val = obj[key];
+    if (val && typeof val === 'object') {
+      for (const sub of POSSIBLE_BOOKING_DATE_KEYS) {
+        if (val[sub] !== undefined && val[sub] !== null && String(val[sub]).trim() !== '') {
+          return val[sub];
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// basic HTML-escape
+function escapeHtml(s){
+    if(s===undefined || s===null) return '';
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+}
+
+async function loadBookings(){
+    try {
+        let res = await fetch("/bookings");
+        if(!res.ok) throw new Error("Network error");
+        let data = await res.json();
+
+        let table = document.getElementById("bookingTable");
+
+        // clear any rows except header
+        table.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+
+        data.forEach(b=>{
+            const rawBookingDate = pickBookingDate(b);
+            const dateText = formatBookingDate(rawBookingDate);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${escapeHtml(b.name)}</td>
+                <td>${escapeHtml(b.facility)}</td>
+                <td>${escapeHtml(dateText)}</td>
+                <td>${escapeHtml(b.status)}</td>
+                <td>
+                    <div class="action-wrap">
+                        <button class="btn-approve" onclick="approve(${b.id})">Approve</button>
+                        <button class="btn-reject" onclick="rejectBooking(${b.id})">Reject</button>
+                    </div>
+                </td>
+            `;
+            table.appendChild(tr);
+        });
+    } catch (err) {
+        console.error("Failed to load bookings:", err);
+        const table = document.getElementById("bookingTable");
+        // remove existing rows except header
+        table.querySelectorAll("tr:not(:first-child)").forEach(r => r.remove());
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="5" style="padding:18px; text-align:center; color:#557281;">Failed to load bookings. Check server.</td>`;
+        table.appendChild(tr);
+    }
+}
+
+async function approve(id){
+    try {
+        let res = await fetch(`/bookings/${id}/approve`, {
+            method:"PUT"
+        });
+        let out = await res.json();
+        alert(out.message || "Updated");
+        loadBookings();
+    } catch (err) {
+        console.error(err);
+        alert("Failed to approve booking.");
+    }
+}
+
+/* NEW: reject operation */
+async function rejectBooking(id){
+    try {
+        let res = await fetch(`/bookings/${id}/reject`, {
+            method:"PUT"
+        });
+        let out = await res.json();
+        alert(out.message || "Updated");
+        loadBookings();
+    } catch (err) {
+        console.error(err);
+        alert("Failed to reject booking.");
+    }
+}
+
+loadBookings();
+</script>
+
+</body>
+</html>
